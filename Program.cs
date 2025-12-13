@@ -5,94 +5,81 @@ namespace AssistLabTask1;
 public class Employee
 {
     public int Id { get; set; }
-    public required string FullName { get; set; }
+    public string FullName { get; set; } = null!;
     public string? Position { get; set; }
     public DateTime HireDate { get; set; }
     public bool IsRemote { get; set; }
 }
 
-
 public class Program
 {
-    private static readonly List<Employee> employees = [
-new Employee
-    {
-        Id = 1,
-        FullName = "Jake Peralta",
-        Position = "HR",
-        HireDate = new DateTime(2004, 12, 21),
-        IsRemote = true
-    },
-    new Employee
-    {
-        Id = 2,
-        FullName = "Sam Smith",
-        Position = "Developer",
-        HireDate = new DateTime(2025, 5, 12),
-        IsRemote = false
-    },
-    new Employee
-    {
-        Id = 3,
-        FullName = "Anna Johnson",
-        Position = "Accountant",
-        HireDate = new DateTime(2020, 3, 1),
-        IsRemote = true
-    }
-    ];
-    public static void AddEmployee()
+    private static readonly List<Employee> employees = [];
+    private static int _nextId = 1;
+    static string StringValidator(string message, string errorMessage)
     {
         while (true)
         {
-            Console.Write("Insert employee's full name: ");
-            string? nameInput = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(nameInput))
-            {
-                AnsiConsole.MarkupLine("[red]Full name can't be null![/]");
-                continue;
-            }
-            var employee = new Employee() { FullName = nameInput };
-            Console.Write("Insert employee's position (optional): ");
-            string? positionInput = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(positionInput))
-            {
-                AnsiConsole.MarkupLine("[red]Position was specified, setting it to \"-\"[/]");
-                employee.Position = "-";
-            }
+            Console.Write(message);
+            var input = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(input))
+                return input!;
+            AnsiConsole.MarkupLine(errorMessage);
+        }
+    }
+    static string? StringValidator(string message, string errorMessage, bool isNullAllowed)
+    {
+        while (true)
+        {
+            Console.Write(message);
+            var input = Console.ReadLine();
+            if (isNullAllowed && string.IsNullOrWhiteSpace(input))
+                return null;
+            else if (!string.IsNullOrWhiteSpace(input))
+                return input!;
+            AnsiConsole.MarkupLine(errorMessage);
+        }
+    }
+    static DateTime DateParser(string message, string errorMessage)
+    {
+        while (true)
+        {
+            Console.Write(message);
+            var input = Console.ReadLine()?.Trim();
+            if (DateTime.TryParseExact(input, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                return result;
             else
-            {
-                employee.Position = positionInput;
-            }
-            Console.Write("Insert employee's hire date: ");
-            string? dateInput = Console.ReadLine();
-            if (DateTime.TryParseExact(dateInput, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
-            {
-                employee.HireDate = result;
-            }
-            else
-            {
-                AnsiConsole.MarkupLine("[red]Hire date is invalId![/]");
-                continue;
-            }
-            Console.Write("Is remote employee(y/n, yes/no, 1/0): ");
-            string? isRemote = Console.ReadLine()?.Trim().ToLower();
-            switch (isRemote)
+                AnsiConsole.MarkupLine(errorMessage);
+        }
+    }
+    static bool IsRemote(string message, string errorMessage)
+    {
+        while (true)
+        {
+            Console.Write(message);
+            string? inputRemote = Console.ReadLine()?.Trim().ToLower();
+            switch (inputRemote)
             {
                 case "y" or "yes" or "1":
-                    employee.IsRemote = true;
-                    break;
+                    return true;
                 case "n" or "no" or "0":
-                    employee.IsRemote = false;
-                    break;
+                    return false;
                 default:
-                    AnsiConsole.MarkupLine("[red]InvalId input![/]");
+                    AnsiConsole.MarkupLine(errorMessage);
                     continue;
             }
-            employee.Id = employees.Count + 1;
-            employees.Add(employee);
-            AnsiConsole.MarkupLine($"[green]New employee {employee.FullName} is added successfully![/]");
-            break;
         }
+    }
+    public static void AddEmployee()
+    {
+        var employee = new Employee();
+        employee.FullName = StringValidator("Insert employee's full name: ", "[red]Full name can't be null![/]");
+        employee.Position = StringValidator("Insert employee's position (optional): ", "[red]Position was specified, setting it to \"-\"[/]", true);
+        employee.Position ??= "-";
+        employee.HireDate = DateParser("Insert employee's hire date: ", "[red]Hire date is invalId![/]");
+        employee.IsRemote = IsRemote("Is remote employee(y/n, yes/no, 1/0): ", "[red]InvalId input![/]");
+        employee.Id = _nextId++;
+        employees.Add(employee);
+        AnsiConsole.MarkupLine($"[green]New employee {employee.FullName} is added successfully![/]");
     }
     static void ListAllEmployees()
     {
@@ -109,7 +96,7 @@ new Employee
             employeesTable.AddRow(
                 e.Id.ToString(),
                 e.FullName,
-                e.Position,
+                e.Position ?? "-",
                 e.HireDate.ToString("dd.MM.yyyy"),
                 e.IsRemote ? "Yes" : "No"
             );
@@ -125,16 +112,46 @@ new Employee
         employeesTable.AddColumn("Position");
         employeesTable.AddColumn("Hire date");
         employeesTable.ShowRowSeparators();
-        List<Employee> remoteEmployees = [.. employees.Where(e => e.IsRemote == true)];
+        List<Employee> remoteEmployees = [.. employees.Where(e => e.IsRemote)];
         foreach (Employee e in remoteEmployees)
         {
             employeesTable.AddRow(
                 e.Id.ToString(),
                 e.FullName,
-                e.Position,
+                e.Position ?? "-",
                 e.HireDate.ToString("dd.MM.yyyy")
             );
         }
+        AnsiConsole.Write(employeesTable);
+    }
+    static void FindById()
+    {
+        Console.Write("Enter employee's Id: ");
+        var idInput = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(idInput) || !int.TryParse(idInput, out int id))
+        {
+            AnsiConsole.MarkupLine("[red]Id must be a number![/]");
+            return;
+        }
+        var employee = employees.Find(i => i.Id == id);
+        if (employee is null)
+        {
+            AnsiConsole.MarkupLine($"[red]Employee with Id {id} not found.[/]");
+            return;
+        }
+        AnsiConsole.MarkupLine($"[yellow]Here is employee with Id {id}: [/]");
+        Table employeesTable = new();
+        employeesTable.AddColumn("Id");
+        employeesTable.AddColumn("Full name");
+        employeesTable.AddColumn("Position");
+        employeesTable.AddColumn("Hire date");
+        employeesTable.AddColumn("Remote?");
+        employeesTable.AddRow(
+            employee.Id.ToString(),
+            employee.FullName,
+            employee.Position ?? "-",
+            employee.HireDate.ToString("dd.MM.yyyy"),
+            employee.IsRemote ? "Yes" : "No");
         AnsiConsole.Write(employeesTable);
     }
     static string GetInput()
@@ -170,7 +187,7 @@ new Employee
                     ListRemoteEmployees();
                     break;
                 case "4":
-                    // Find by Id logic to be added...
+                    FindById();
                     break;
                 case "0":
                     AnsiConsole.Markup("[yellow]Exiting the program...[/]");
