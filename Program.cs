@@ -14,7 +14,32 @@ public class Employee
 
 public class Program
 {
-    private static readonly List<Employee> employees = [];
+    private static readonly List<Employee> employees = [
+new Employee
+    {
+        Id = 1,
+        FullName = "Jake Peralta",
+        Position = "HR",
+        HireDate = new DateTime(2004, 12, 21),
+        IsRemote = true
+    },
+    new Employee
+    {
+        Id = 2,
+        FullName = "Sam Smith",
+        Position = "Developer",
+        HireDate = new DateTime(2025, 5, 12),
+        IsRemote = false
+    },
+    new Employee
+    {
+        Id = 3,
+        FullName = "Anna Johnson",
+        Position = "Accountant",
+        HireDate = new DateTime(2020, 3, 1),
+        IsRemote = true
+    }
+    ];
     public static void AddEmployee()
     {
         while (true)
@@ -91,6 +116,27 @@ public class Program
         }
         AnsiConsole.Write(employeesTable);
     }
+    static void ListRemoteEmployees()
+    {
+        AnsiConsole.MarkupLine("[yellow]Here is remote employee list: [/]");
+        Table employeesTable = new();
+        employeesTable.AddColumn("Id");
+        employeesTable.AddColumn("Full name");
+        employeesTable.AddColumn("Position");
+        employeesTable.AddColumn("Hire date");
+        employeesTable.ShowRowSeparators();
+        List<Employee> remoteEmployees = [.. employees.Where(e => e.IsRemote == true)];
+        foreach (Employee e in remoteEmployees)
+        {
+            employeesTable.AddRow(
+                e.Id.ToString(),
+                e.FullName,
+                e.Position,
+                e.HireDate.ToString("dd.MM.yyyy")
+            );
+        }
+        AnsiConsole.Write(employeesTable);
+    }
     static string GetInput()
     {
         while (true)
@@ -121,7 +167,7 @@ public class Program
                     ListAllEmployees();
                     break;
                 case "3":
-                    // List remote employees only logic to be added...
+                    ListRemoteEmployees();
                     break;
                 case "4":
                     // Find by Id logic to be added...
