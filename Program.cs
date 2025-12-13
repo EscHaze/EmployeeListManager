@@ -15,6 +15,12 @@ public class Program
 {
     private static readonly List<Employee> employees = [];
     private static int _nextId = 1;
+    /// <summary>
+    /// Reads a line from the console and repeats until the user enters a non‑empty, non‑whitespace string.
+    /// </summary>
+    /// <param name="message">Console message with information for user</param>
+    /// <param name="errorMessage">Validation error message</param>
+    /// <returns>Returns non-null string values</returns>
     static string StringValidator(string message, string errorMessage)
     {
         while (true)
@@ -26,6 +32,13 @@ public class Program
             AnsiConsole.MarkupLine(errorMessage);
         }
     }
+    /// <summary>
+    /// Overload of StringValidator method, allows using null values if user needs default value to be assigned
+    /// </summary>
+    /// <param name="message">Console message with information for user</param>
+    /// <param name="errorMessage">Validation error message</param>
+    /// <param name="isNullAllowed">Permission to use null value</param>
+    /// <returns>Returns non-null string value if !isNullAllowed, returns null value if isNullAllowed and input is null, empty or white space</returns>
     static string? StringValidator(string message, string errorMessage, bool isNullAllowed)
     {
         while (true)
@@ -39,6 +52,11 @@ public class Program
             AnsiConsole.MarkupLine(errorMessage);
         }
     }
+    /// <summary>
+    /// Checks format of the string. Required format is "dd.MM.yyyy"
+    /// </summary>
+    /// <param name="message">Console message with information for user</param>
+    /// <param name="errorMessage">Validation error message</param>
     static DateTime DateParser(string message, string errorMessage)
     {
         while (true)
@@ -51,6 +69,11 @@ public class Program
                 AnsiConsole.MarkupLine(errorMessage);
         }
     }
+    /// <summary>
+    /// Checks if employee's status remote or not
+    /// </summary>
+    /// <param name="message">Console message with information for user</param>
+    /// <param name="errorMessage">Validation error message</param>
     static bool IsRemote(string message, string errorMessage)
     {
         while (true)
