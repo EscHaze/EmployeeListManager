@@ -4,7 +4,7 @@ namespace AssistLabTask1;
 
 public class Employee
 {
-    public int ID { get; set; }
+    public int Id { get; set; }
     public required string FullName { get; set; }
     public string? Position { get; set; }
     public DateTime HireDate { get; set; }
@@ -15,7 +15,6 @@ public class Employee
 public class Program
 {
     private static readonly List<Employee> employees = [];
-    private static readonly Table employeesTable = new();
     public static void AddEmployee()
     {
         while (true)
@@ -28,13 +27,18 @@ public class Program
                 continue;
             }
             var employee = new Employee() { FullName = nameInput };
-            Console.Write("Insert employee's hire date: ");
+            Console.Write("Insert employee's position (optional): ");
             string? positionInput = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(nameInput))
+            if (string.IsNullOrWhiteSpace(positionInput))
             {
                 AnsiConsole.MarkupLine("[red]Position was specified, setting it to \"-\"[/]");
-                
+                employee.Position = "-";
             }
+            else
+            {
+                employee.Position = positionInput;
+            }
+            Console.Write("Insert employee's hire date: ");
             string? dateInput = Console.ReadLine();
             if (DateTime.TryParseExact(dateInput, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
             {
@@ -42,7 +46,7 @@ public class Program
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Hire date is invalid![/]");
+                AnsiConsole.MarkupLine("[red]Hire date is invalId![/]");
                 continue;
             }
             Console.Write("Is remote employee(y/n, yes/no, 1/0): ");
@@ -56,21 +60,44 @@ public class Program
                     employee.IsRemote = false;
                     break;
                 default:
-                    AnsiConsole.MarkupLine("[red]Invalid input![/]");
+                    AnsiConsole.MarkupLine("[red]InvalId input![/]");
                     continue;
             }
-            employee.ID = employees.Count + 1;
+            employee.Id = employees.Count + 1;
             employees.Add(employee);
             AnsiConsole.MarkupLine($"[green]New employee {employee.FullName} is added successfully![/]");
             break;
         }
+    }
+    static void ListAllEmployees()
+    {
+        AnsiConsole.MarkupLine("[yellow]Here is employee list: [/]");
+        Table employeesTable = new();
+        employeesTable.AddColumn("Id");
+        employeesTable.AddColumn("Full name");
+        employeesTable.AddColumn("Position");
+        employeesTable.AddColumn("Hire date");
+        employeesTable.AddColumn("Remote?");
+        employeesTable.ShowRowSeparators();
+        foreach (Employee e in employees)
+        {
+            employeesTable.AddRow(
+                e.Id.ToString(),
+                e.FullName,
+                e.Position,
+                e.HireDate.ToString("dd.MM.yyyy"),
+                e.IsRemote ? "Yes" : "No"
+            );
+        }
+        AnsiConsole.Write(employeesTable);
     }
     static string GetInput()
     {
         while (true)
         {
             Console.WriteLine("\nWelcome, please select the action from the action list.");
-            Console.WriteLine("Action list: 1. Add a new employee, 2. List all employees, 3. List remote employees only, 4. Find by ID, 0. Exit the program.");
+            Console.WriteLine("Action list: \n1. Add a new employee \n2. List all employees \n3. List remote employees only \n4. Find by Id \n0. Exit the program.");
+            Console.Write("Your input: ");
             string? input = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -91,13 +118,13 @@ public class Program
                     AddEmployee();
                     break;
                 case "2":
-                    // List all employees logic to be added...
+                    ListAllEmployees();
                     break;
                 case "3":
                     // List remote employees only logic to be added...
                     break;
                 case "4":
-                    // Find by ID logic to be added...
+                    // Find by Id logic to be added...
                     break;
                 case "0":
                     AnsiConsole.Markup("[yellow]Exiting the program...[/]");
