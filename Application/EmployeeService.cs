@@ -1,10 +1,10 @@
 ﻿using EmployeeListManager.Domain;
 namespace EmployeeListManager.Application;
 
-public class ApplicationClass
+public class EmployeeService
 {
     private readonly IEmployeeRepository _repository;
-    public ApplicationClass(IEmployeeRepository repository) => _repository = repository;
+    public EmployeeService(IEmployeeRepository repository) => _repository = repository;
     public void AddEmployee(Employee employee)
     {
         _repository.Add(employee);
@@ -15,7 +15,7 @@ public class ApplicationClass
     }
     public IReadOnlyList<Employee> GetRemoteEmployees()
     {
-        return [.. _repository.GetAllEmployees().Where(e => e.IsRemote == true)];
+        return _repository.GetRemoteEmployees();
     }
     public Employee? FindById(int id)
     {

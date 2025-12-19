@@ -18,7 +18,7 @@ public class UnitTest1
             IsRemote = true
         };
         var mockRepo = new Mock<IEmployeeRepository>();
-        var application = new ApplicationClass(mockRepo.Object);
+        var application = new EmployeeService(mockRepo.Object);
         application.AddEmployee(newEmployee);
         mockRepo.Verify(r => r.Add(newEmployee), Times.Once);
     }
@@ -34,7 +34,7 @@ public class UnitTest1
         };
         var mockRepo = new Mock<IEmployeeRepository>();
         mockRepo.Setup(r => r.GetAllEmployees()).Returns(employees);
-        var application = new ApplicationClass(mockRepo.Object);
+        var application = new EmployeeService(mockRepo.Object);
         var result = application.GetAllEmployees();
         Assert.Equal(4, result.Count);
         Assert.Contains(result, e => e.FullName == "Walter White");
@@ -54,7 +54,7 @@ public class UnitTest1
         };
         var mockRepo = new Mock<IEmployeeRepository>();
         mockRepo.Setup(r => r.GetAllEmployees()).Returns(employees);
-        var application = new ApplicationClass(mockRepo.Object);
+        var application = new EmployeeService(mockRepo.Object);
         var remoteEmployees = application.GetRemoteEmployees();
         Assert.Equal(2, remoteEmployees.Count);
         Assert.Contains(remoteEmployees, r => r.FullName == "Walter White");
@@ -67,7 +67,7 @@ public class UnitTest1
         var excpectedEmployee = new Employee { Id = targetId, FullName = "Mike Ehrmantraut", HireDate = new DateTime(2002, 12, 20), IsRemote = false };
         var mockRepo = new Mock<IEmployeeRepository>();
         mockRepo.Setup(r => r.FindById(targetId)).Returns(excpectedEmployee);
-        var application = new ApplicationClass(mockRepo.Object);
+        var application = new EmployeeService(mockRepo.Object);
         var result = application.FindById(targetId);
         Assert.NotNull(result);
         Assert.Equal(targetId, result.Id);
@@ -78,7 +78,7 @@ public class UnitTest1
         const int nonExistentId = 2000;
         var mockRepo = new Mock<IEmployeeRepository>();
         mockRepo.Setup(r => r.FindById(It.IsAny<int>())).Returns((Employee)null);
-        var application = new ApplicationClass(mockRepo.Object);
+        var application = new EmployeeService(mockRepo.Object);
         var result = application.FindById(nonExistentId);
         Assert.Null(result);
     }

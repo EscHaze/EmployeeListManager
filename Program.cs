@@ -7,9 +7,9 @@ public class Program
 {
     static void Main()
     {
-        var repository = new InfrastructureClass();
-        var application = new ApplicationClass(repository);
-        var console = new ConsoleUiClass(application);
+        var repository = new InMemoryEmployeeRepository();
+        var service = new EmployeeService(repository);
+        var console = new EmployeeConsoleApp(service);
         console.Run();
     }
 }

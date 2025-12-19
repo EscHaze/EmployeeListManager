@@ -4,10 +4,10 @@ using Spectre.Console;
 using EmployeeListManager.Domain;
 namespace EmployeeListManager.ConsoleUi;
 
-public class ConsoleUiClass
+public class EmployeeConsoleApp
 {
-    private readonly ApplicationClass _application;
-    public ConsoleUiClass(ApplicationClass application)
+    private readonly EmployeeService _application;
+    public EmployeeConsoleApp(EmployeeService application)
     {
         _application = application;
     }
