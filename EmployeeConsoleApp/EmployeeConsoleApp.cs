@@ -63,17 +63,21 @@ public class EmployeeConsoleApp
     /// <param name="errorMessage">Validation error message</param>
     /// <param name="isNullAllowed">Permission to use null value</param>
     /// <returns>Returns non-null string value if !isNullAllowed, returns null value if isNullAllowed and input is null, empty or white space</returns>
-    public string? StringValidator(string message, string errorMessage, bool isNullAllowed)
+    public string? StringValidator(string message, bool isNullAllowed)
     {
         while (true)
         {
             Console.Write(message);
             var input = Console.ReadLine();
             if (isNullAllowed && string.IsNullOrWhiteSpace(input))
+            {
+                AnsiConsole.MarkupLine("[grey]Input skipped. Default value will be used.[/]");
                 return null;
+            }
             else if (!string.IsNullOrWhiteSpace(input))
+            {
                 return input!;
-            AnsiConsole.MarkupLine(errorMessage);
+            }
         }
     }
     /// <summary>
@@ -118,12 +122,12 @@ public class EmployeeConsoleApp
     }
     public void AddEmployee()
     {
-        var employee = new Employee();
-        employee.FullName = StringValidator("Insert employee's full name: ", "[red]Full name can't be null![/]");
-        employee.Position = StringValidator("Insert employee's position (optional): ", "[red]Position was specified, setting it to \"-\"[/]", true);
-        employee.Position ??= "-";
-        employee.HireDate = DateParser("Insert employee's hire date: ", "[red]Hire date is invalId![/]");
-        employee.IsRemote = IsRemote("Is remote employee(y/n, yes/no, 1/0): ", "[red]InvalId input![/]");
+        var employee = Employee.Create(
+                    StringValidator("Insert employee's full name: ", "[red]Full name can't be null![/]"),
+                    StringValidator("Insert employee's position (optional): ", true),
+                    DateParser("Insert employee's hire date: ", "[red]Hire date is invalId![/]"),
+                    IsRemote("Is remote employee(y/n, yes/no, 1/0): ", "[red]InvalId input![/]")
+        );
         _application.AddEmployee(employee);
         AnsiConsole.MarkupLine($"[green]New employee {employee.FullName} is added successfully![/]");
     }

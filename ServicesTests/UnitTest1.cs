@@ -9,14 +9,13 @@ public class UnitTest1
     [Fact]
     public void AddEmployee_ShouldCallRepositoryAddExactlyOnce()
     {
-        var newEmployee = new Employee
-        {
-            Id = 1,
-            FullName = "David Martinez",
-            HireDate = new DateTime(2077, 10, 25),
-            Position = "PR",
-            IsRemote = true
-        };
+        var newEmployee = Employee.Create
+        (
+            "David Martinez",
+            "PR",
+            new DateTime(2077, 10, 25),
+            true
+        );
         var mockRepo = new Mock<IEmployeeRepository>();
         var application = new EmployeeService(mockRepo.Object);
         application.AddEmployee(newEmployee);
@@ -27,10 +26,10 @@ public class UnitTest1
     {
         var employees = new List<Employee>
         {
-            new () { Id = 1, FullName = "Walter White", HireDate = new DateTime(2008, 03, 27),IsRemote = true },
-            new () { Id = 2, FullName = "Jesse Pinkman", HireDate = new DateTime(2008, 06, 02),IsRemote = false },
-            new () { Id = 3, FullName = "Gus Fring", HireDate = new DateTime(1995, 05, 12),  IsRemote = true},
-            new () { Id = 4, FullName = "Mike Ehrmantraut", HireDate = new DateTime(2002, 12, 20),IsRemote = false }
+            Employee.Create("Walter White", null, new DateTime(2008, 03, 27), true),
+            Employee.Create("Jesse Pinkman", null, new DateTime(2008, 06, 02), false),
+            Employee.Create("Gus Fring", null, new DateTime(1995, 05, 12), true),
+            Employee.Create("Mike Ehrmantraut", null, new DateTime(2002, 12, 20), false)
         };
         var mockRepo = new Mock<IEmployeeRepository>();
         mockRepo.Setup(r => r.GetAllEmployees()).Returns(employees);
@@ -47,13 +46,13 @@ public class UnitTest1
     {
         var employees = new List<Employee>
         {
-            new () { Id = 1, FullName = "Walter White", HireDate = new DateTime(2008, 03, 27),IsRemote = true },
-            new () { Id = 2, FullName = "Jesse Pinkman", HireDate = new DateTime(2008, 06, 02),IsRemote = false },
-            new () { Id = 3, FullName = "Gus Fring", HireDate = new DateTime(1995, 05, 12),  IsRemote = true},
-            new () { Id = 4, FullName = "Mike Ehrmantraut", HireDate = new DateTime(2002, 12, 20),IsRemote = false }
+            Employee.Create("Walter White", null, new DateTime(2008, 03, 27), true),
+            Employee.Create("Jesse Pinkman", null, new DateTime(2008, 06, 02), false),
+            Employee.Create("Gus Fring", null, new DateTime(1995, 05, 12), true),
+            Employee.Create("Mike Ehrmantraut", null, new DateTime(2002, 12, 20), false)
         };
         var mockRepo = new Mock<IEmployeeRepository>();
-        mockRepo.Setup(r => r.GetAllEmployees()).Returns(employees);
+        mockRepo.Setup(r => r.GetRemoteEmployees()).Returns([..employees.Where(e=>e.IsRemote)]);
         var application = new EmployeeService(mockRepo.Object);
         var remoteEmployees = application.GetRemoteEmployees();
         Assert.Equal(2, remoteEmployees.Count);
@@ -64,7 +63,8 @@ public class UnitTest1
     public void FindById_WhenEmployeeExists_ShouldReturnEmployeeWithSelectedId()
     {
         const int targetId = 23;
-        var excpectedEmployee = new Employee { Id = targetId, FullName = "Mike Ehrmantraut", HireDate = new DateTime(2002, 12, 20), IsRemote = false };
+        var excpectedEmployee = Employee.Create("Mike Ehrmantraut", null, new DateTime(2002, 12, 20), false);
+        excpectedEmployee.Id = targetId;
         var mockRepo = new Mock<IEmployeeRepository>();
         mockRepo.Setup(r => r.FindById(targetId)).Returns(excpectedEmployee);
         var application = new EmployeeService(mockRepo.Object);

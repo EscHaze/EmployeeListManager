@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeListManager", "Empl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{336643D7-5B76-476B-A5DC-84719C25CA31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApps", "ConsoleApps\ConsoleApps.csproj", "{3A78EB35-60B6-4AA0-9859-6451EA7CE620}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeConsoleApp", "EmployeeConsoleApp\EmployeeConsoleApp.csproj", "{3A78EB35-60B6-4AA0-9859-6451EA7CE620}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{FF681E27-D9AE-4EDA-A8D8-A32DEACFB164}"
 EndProject
