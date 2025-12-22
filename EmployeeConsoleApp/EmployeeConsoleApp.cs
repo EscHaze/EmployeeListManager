@@ -1,15 +1,15 @@
 ﻿using System.Globalization;
-using EmployeeListManager.Application;
+using EmployeeListManager.Services;
 using Spectre.Console;
 using EmployeeListManager.Domain;
-namespace EmployeeListManager.ConsoleUi;
+namespace EmployeeListManager.EmployeeConsoleApp;
 
-public class EmployeeConsoleApp
+public class EmployeeConsoleAppClass
 {
-    private readonly EmployeeService _application;
-    public EmployeeConsoleApp(EmployeeService application)
+    private readonly EmployeeService _service;
+    public EmployeeConsoleAppClass(EmployeeService service)
     {
-        _application = application;
+        _service = service;
     }
     public void Run()
     {
@@ -128,7 +128,7 @@ public class EmployeeConsoleApp
                     DateParser("Insert employee's hire date: ", "[red]Hire date is invalId![/]"),
                     IsRemote("Is remote employee(y/n, yes/no, 1/0): ", "[red]InvalId input![/]")
         );
-        _application.AddEmployee(employee);
+        _service.AddEmployee(employee);
         AnsiConsole.MarkupLine($"[green]New employee {employee.FullName} is added successfully![/]");
     }
     public void ListAllEmployees()
@@ -141,7 +141,7 @@ public class EmployeeConsoleApp
         employeesTable.AddColumn("Hire date");
         employeesTable.AddColumn("Remote?");
         employeesTable.ShowRowSeparators();
-        foreach (Employee e in _application.GetAllEmployees())
+        foreach (Employee e in _service.GetAllEmployees())
         {
             employeesTable.AddRow(
                 e.Id.ToString(),
@@ -162,7 +162,7 @@ public class EmployeeConsoleApp
         employeesTable.AddColumn("Position");
         employeesTable.AddColumn("Hire date");
         employeesTable.ShowRowSeparators();
-        foreach (Employee e in _application.GetRemoteEmployees())
+        foreach (Employee e in _service.GetRemoteEmployees())
         {
             employeesTable.AddRow(
                 e.Id.ToString(),
@@ -182,7 +182,7 @@ public class EmployeeConsoleApp
             AnsiConsole.MarkupLine("[red]Id must be a number![/]");
             return;
         }
-        var employee = _application.FindById(id);
+        var employee = _service.FindById(id);
         if (employee is null)
         {
             AnsiConsole.MarkupLine($"[red]Employee with Id {id} not found.[/]");

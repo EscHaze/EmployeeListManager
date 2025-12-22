@@ -1,5 +1,5 @@
 ﻿using EmployeeListManager.Domain;
-namespace EmployeeListManager.Application;
+namespace EmployeeListManager.Services;
 
 public class EmployeeService
 {

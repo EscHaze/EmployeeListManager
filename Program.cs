@@ -1,5 +1,5 @@
-﻿using EmployeeListManager.Application;
-using EmployeeListManager.ConsoleUi;
+﻿using EmployeeListManager.Services;
+using EmployeeListManager.EmployeeConsoleApp;
 using EmployeeListManager.Infrastructure;
 namespace EmployeeListManager;
 
@@ -11,7 +11,7 @@ public class Program
         {
             var repository = new InMemoryEmployeeRepository();
             var service = new EmployeeService(repository);
-            var console = new EmployeeConsoleApp(service);
+            var console = new EmployeeConsoleAppClass(service);
             console.Run();
         }
         catch(Exception ex)
