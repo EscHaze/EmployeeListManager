@@ -1,6 +1,3 @@
-
-using System.Security.Cryptography.X509Certificates;
-
 namespace EmployeeListManager.Domain;
 public class Employee
 {
